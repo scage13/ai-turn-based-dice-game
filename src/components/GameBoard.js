@@ -177,26 +177,6 @@ const GameBoard = ({ players }) => {
           ctx.stroke();
         });
 
-        // Draw players
-        players.forEach((player) => {
-          const pos = getWaypointPosition(player.position, waypoints.length);
-          const { player: playerConfig } = gameConfig;
-          
-          ctx.beginPath();
-          ctx.arc(pos.x, pos.y + playerConfig.offset, playerConfig.size, 0, Math.PI * 2);
-          ctx.fillStyle = `hsl(${player.id * 137.5}, 70%, 50%)`;
-          ctx.fill();
-          ctx.strokeStyle = playerConfig.style.strokeColor;
-          ctx.lineWidth = playerConfig.style.strokeWidth;
-          ctx.stroke();
-          
-          ctx.fillStyle = playerConfig.style.fontColor;
-          ctx.font = `bold ${playerConfig.style.fontSize}px ${playerConfig.style.fontFamily}`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(player.name[0], pos.x, pos.y + playerConfig.offset);
-        });
-
         // Restore the canvas context transformation
         ctx.restore();
       } catch (error) {
