@@ -1,7 +1,7 @@
 export const gameConfig = {
   // Waypoint appearance
   waypoint: {
-    size: 24, // radius of hexagon
+    size: 26, // radius of hexagon
     spacing: {
       horizontal: 3.8, // multiplier of size
       vertical: 1.6,   // multiplier of size
@@ -16,7 +16,7 @@ export const gameConfig = {
       fontSize: 24,
       fontColor: '#fff',
       fontFamily: 'Monospace',
-      opacity: 0.5  // Add opacity setting (0 to 1)
+      opacity: 1  // Add opacity setting (0 to 1)
     },
     defaultBackground: 'waypoints/default.webp',
   },
@@ -135,13 +135,13 @@ export const gameConfig = {
 
   // Canvas settings
   canvas: {
-    width: 1113,
-    height: 1108,
+    width: 1105,
+    height: 795,
     backgroundColor: '#ffffff',
     padding: 50,
     background: {
-      image: 'background/board-map-bg.jpg',
-      opacity: 1,  // 0 to 1
+      image: 'background/board-map-bg-cut-version.jpg',
+      opacity: 0.8,  // 0 to 1
       scale: 'stretch' // 'cover', 'contain', or 'stretch'
     }
   },
