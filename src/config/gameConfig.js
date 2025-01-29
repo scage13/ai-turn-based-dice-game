@@ -126,7 +126,7 @@ export const gameConfig = {
     },
     {
       id: 11,
-      coordinates: { x: 870, y: 660 },
+      coordinates: { x: 870, y: 560 },
       background: 'waypoints/mount-doom.webp',
       rulesInfo: 'Reach this point to win the game!',
       storyInfo: 'The final destination of your epic journey.'

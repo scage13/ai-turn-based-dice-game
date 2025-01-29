@@ -4,7 +4,7 @@ import { gameConfig } from '../config/gameConfig';
 
 const GameBoard = ({ players }) => {
   const canvasRef = useRef(null);
-  const waypoints = Array.from({ length: 11 }, (_, i) => i);
+  const waypoints = Array.from({ length: gameConfig.waypoints.length }, (_, i) => i);
   
   // Calculate waypoint positions
   const getWaypointPosition = (index, totalPoints) => {
