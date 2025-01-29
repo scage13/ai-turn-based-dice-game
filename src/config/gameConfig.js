@@ -148,12 +148,12 @@ export const gameConfig = {
 
   // Player marker settings
   player: {
-    size: 20,
-    offset: 45,
+    size: 15,           // Reduced size for better fit
+    offset: 35,         // Distance above waypoint
     style: {
       strokeColor: '#fff',
       strokeWidth: 2,
-      fontSize: 18,
+      fontSize: 14,     // Reduced font size
       fontFamily: 'Arial',
       fontColor: '#fff'
     }

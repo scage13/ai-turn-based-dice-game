@@ -177,6 +177,42 @@ const GameBoard = ({ players }) => {
           ctx.stroke();
         });
 
+        // Draw players after waypoints
+        players.forEach((player) => {
+          const pos = getWaypointPosition(player.position, waypoints.length);
+          const { player: playerConfig } = gameConfig;
+          
+          // Draw player circle
+          ctx.beginPath();
+          ctx.arc(
+            pos.x, 
+            pos.y - playerConfig.offset, // Move players above waypoints
+            playerConfig.size,
+            0,
+            Math.PI * 2
+          );
+          
+          // Fill with player color
+          ctx.fillStyle = player.color;
+          ctx.fill();
+          
+          // Add white border
+          ctx.strokeStyle = playerConfig.style.strokeColor;
+          ctx.lineWidth = playerConfig.style.strokeWidth;
+          ctx.stroke();
+          
+          // Draw player initial/number
+          ctx.fillStyle = playerConfig.style.fontColor;
+          ctx.font = `bold ${playerConfig.style.fontSize}px ${playerConfig.style.fontFamily}`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(
+            player.name[0],
+            pos.x,
+            pos.y - playerConfig.offset
+          );
+        });
+
         // Restore the canvas context transformation
         ctx.restore();
       } catch (error) {

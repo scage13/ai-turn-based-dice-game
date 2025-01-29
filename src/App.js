@@ -8,10 +8,10 @@ import { gameConfig } from './config/gameConfig';
 
 function App() {
   const [gameStarted, setGameStarted] = useState(false);
-  const [gameMode, setGameMode] = useState(null); // 'local' or 'ai'
+  const [gameMode, setGameMode] = useState(null);
   const [players, setPlayers] = useState([
-    { id: 1, name: "Player 1", position: 0 },
-    { id: 2, name: "Player 2", position: 0 }
+    { id: 1, name: "Good Side", position: 0, color: '#ACDFDD' },
+    { id: 2, name: "Evil Side", position: 0, color: '#A30000' }
   ]);
   const [currentPlayer, setCurrentPlayer] = useState(0);
   const [diceValue, setDiceValue] = useState(null);
@@ -68,10 +68,10 @@ function App() {
   }, [gameMode, currentPlayer, isGameOver, rollDice]);
 
   const resetGame = () => {
-    setPlayers([
-      { id: 1, name: "Player 1", position: 0 },
-      { id: 2, name: gameMode === 'ai' ? "AI Player" : "Player 2", position: 0 }
-    ]);
+    setPlayers(players.map(player => ({
+      ...player,
+      position: 0
+    })));
     setCurrentPlayer(0);
     setDiceValue(null);
     setIsGameOver(false);
@@ -81,8 +81,18 @@ function App() {
   const handleStartGame = (settings) => {
     setGameMode(settings.mode);
     setPlayers([
-      { id: 1, name: "Player 1", position: 0 },
-      { id: 2, name: settings.mode === 'ai' ? "AI Player" : "Player 2", position: 0 }
+      { 
+        id: 1, 
+        name: settings.player1.name, 
+        position: 0,
+        color: settings.player1.color
+      },
+      { 
+        id: 2, 
+        name: settings.mode === 'ai' ? "AI " + settings.player2.name : settings.player2.name, 
+        position: 0,
+        color: settings.player2.color
+      }
     ]);
     setGameStarted(true);
   };
