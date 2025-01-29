@@ -3,6 +3,7 @@ import './App.css';
 import GameBoard from './components/GameBoard';
 import Dice from './components/Dice';
 import PlayerInfo from './components/PlayerInfo';
+import { gameConfig } from './config/gameConfig';
 
 function App() {
   const [players, setPlayers] = useState([
@@ -14,16 +15,17 @@ function App() {
   const [isGameOver, setIsGameOver] = useState(false);
 
   const rollDice = () => {
-    const newDiceValue = Math.floor(Math.random() * 6) + 1;
+    const newDiceValue = Math.floor(Math.random() * 20) + 1;
     setDiceValue(newDiceValue);
     
     const updatedPlayers = [...players];
-    const newPosition = Math.min(updatedPlayers[currentPlayer].position + newDiceValue, 10);
+    const maxPosition = gameConfig.waypoints.length - 1;
+    const newPosition = Math.min(updatedPlayers[currentPlayer].position + newDiceValue, maxPosition);
     updatedPlayers[currentPlayer].position = newPosition;
     
     setPlayers(updatedPlayers);
 
-    if (newPosition === 10) {
+    if (newPosition === maxPosition) {
       setIsGameOver(true);
     } else {
       setCurrentPlayer(currentPlayer === 0 ? 1 : 0);
