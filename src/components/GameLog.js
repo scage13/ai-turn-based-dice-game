@@ -2,10 +2,20 @@ import React from 'react';
 import './GameLog.css';
 
 const GameLog = ({ logs }) => {
+  // Create a copy of logs array and reverse it to show newest first
+  const sortedLogs = [...logs].reverse();
+
+  const getTerritoryDescription = (territoryType, territoryName) => {
+    const type = territoryType === 'common' ? 'neutral' 
+      : territoryType === 'good' ? 'friendly' 
+      : 'hostile';
+    return `on ${type} territory "${territoryName}"`;
+  };
+
   return (
     <div className="game-log">
       <div className="log-entries">
-        {logs.map((log, index) => {
+        {sortedLogs.map((log, index) => {
           // Determine player side from name
           const playerSide = log.player.toLowerCase().includes('evil') ? 'evil' : 'good';
           
@@ -22,7 +32,7 @@ const GameLog = ({ logs }) => {
               <div className="log-content">
                 <strong>{log.player}</strong> rolled <span className="dice-value">{log.diceValue}</span>
                 <div className="territory-info">
-                  on {log.territoryType === 'common' ? 'neutral' : log.territoryType === 'good' ? 'friendly' : 'hostile'} territory
+                  {getTerritoryDescription(log.territoryType, log.locationName)}
                 </div>
                 <div className="result">{log.result}</div>
               </div>

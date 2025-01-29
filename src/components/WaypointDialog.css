@@ -13,10 +13,12 @@
   z-index: 1000;
   padding: 20px;
   animation: fadeIn 0.3s ease forwards;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
 }
 
 .waypoint-dialog {
-  background-color: #f4e4bc;
+  background-color: rgba(244, 228, 188, 0.95);
   border-radius: 8px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
   max-width: 800px;
@@ -28,15 +30,21 @@
   animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   transform: translateY(30px);
   opacity: 0;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 /* Animation keyframes */
 @keyframes fadeIn {
   from {
     background-color: rgba(0, 0, 0, 0);
+    backdrop-filter: blur(0);
+    -webkit-backdrop-filter: blur(0);
   }
   to {
     background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
   }
 }
 
@@ -77,24 +85,20 @@
 }
 
 .dialog-header {
+  padding: 1.5rem;
   position: relative;
-  overflow: hidden;
-  min-height: 200px;
+  text-align: center;
 }
 
 .location-image {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-size: cover;
-  background-position: center;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease;
 }
 
-.dialog-header:hover .location-image {
-  opacity: 1;
-  transform: none;
+.location-image:hover {
+  transform: scale(1.02);
 }
 
 .dialog-header h2 {
@@ -110,11 +114,8 @@
 .location-type {
   font-family: 'Oldenburg', cursive;
   font-size: 1.2em;
-  margin-top: 5px;
-  position: relative;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-  color: white;
-  z-index: 1;
+  color: #666;
+  margin-top: 0.5rem;
 }
 
 .dialog-header:hover {
@@ -122,9 +123,7 @@
 }
 
 .dialog-content {
-  padding: 20px;
-  background-color: #f4e4bc;
-  border-radius: 0 0 8px 8px;
+  padding: 0 2rem 2rem;
 }
 
 .dialog-content h2 {
@@ -143,7 +142,7 @@
 }
 
 .location-description {
-  margin-top: 20px;
+  margin-top: 1.5rem;
   font-family: 'Crimson Text', serif;
   font-size: 1.1em;
   line-height: 1.6;
@@ -187,9 +186,13 @@
 @keyframes fadeOut {
   from {
     background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
   }
   to {
     background-color: rgba(0, 0, 0, 0);
+    backdrop-filter: blur(0);
+    -webkit-backdrop-filter: blur(0);
   }
 }
 

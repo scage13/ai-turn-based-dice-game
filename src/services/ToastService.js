@@ -12,17 +12,18 @@ const getPlayerStyle = (playerSide) => {
   };
 };
 
-export const showTurnResult = (player, diceValue, territoryType, resultMessage) => {
+export const showTurnResult = (player, diceValue, territoryType, resultMessage, locationName) => {
   const territoryDesc = territoryType === 'common' ? 'neutral territory' 
     : territoryType === player.side ? 'friendly territory' 
     : 'hostile territory';
 
-  const message = `${player.name} rolled ${diceValue} on ${territoryDesc}!\n${resultMessage}`;
+  const message = `${player.name} rolled ${diceValue} on ${territoryDesc} "${locationName}"!\n${resultMessage}`;
 
   const logEntry = {
     player: player.name,
     diceValue,
     territoryType,
+    locationName,
     result: resultMessage,
     timestamp: new Date()
   };

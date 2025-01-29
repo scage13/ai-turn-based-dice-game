@@ -7,18 +7,24 @@ const WaypointDialog = ({ waypoint, onClose }) => {
   useEffect(() => {
     if (waypoint) {
       setIsClosing(false);
+      // Prevent body scrolling when dialog is open
+      document.body.style.overflow = 'hidden';
     }
+    // Cleanup function to restore scrolling when dialog closes
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
   }, [waypoint]);
 
   const handleClose = () => {
     setIsClosing(true);
-    setTimeout(onClose, 300);
+    setTimeout(() => {
+      onClose();
+      document.body.style.overflow = 'unset';
+    }, 300);
   };
 
   if (!waypoint) return null;
-
-  // Capitalize first letter of territory type
-  const territoryType = waypoint.locationType.charAt(0).toUpperCase() + waypoint.locationType.slice(1);
 
   return (
     <div 
@@ -32,15 +38,27 @@ const WaypointDialog = ({ waypoint, onClose }) => {
         <button className="close-button" onClick={handleClose}>×</button>
         
         <div className="dialog-header">
-          <div 
-            className="location-image" 
-            style={{ backgroundImage: `url(${waypoint.background})` }}
-          />
+          <h2>{waypoint.locationName}</h2>
+          <div className="location-type">
+            {waypoint.locationType.charAt(0).toUpperCase() + waypoint.locationType.slice(1)} Territory
+          </div>
         </div>
 
         <div className="dialog-content">
-          <h2>{waypoint.locationName}</h2>
-          <div className="location-type">{territoryType} Territory</div>
+          <div 
+            className="location-image" 
+            style={{
+              overflow: 'hidden',
+              borderRadius: '8px',
+              marginBottom: '1rem'
+            }}
+          >
+            <img 
+              src={waypoint.background} 
+              alt={waypoint.locationName} 
+              style={{ width: '100%', height: 'auto' }}
+            />
+          </div>
           <div className="location-description">
             {waypoint.locationDescription.split('\n\n').map((paragraph, index) => (
               <p key={index}>{paragraph}</p>

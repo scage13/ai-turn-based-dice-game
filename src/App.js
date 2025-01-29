@@ -30,9 +30,10 @@ function App() {
     let positionChange = 0;
     let resultMessage = '';
 
-    // Get current waypoint type
+    // Get current waypoint type and name
     const currentWaypoint = gameConfig.waypoints[updatedPlayers[currentPlayer].position];
     const territoryType = currentWaypoint.locationType;
+    const locationName = currentWaypoint.locationName;
     const playerSide = updatedPlayers[currentPlayer].side;
 
     // Critical failure (always the same)
@@ -102,7 +103,8 @@ function App() {
       updatedPlayers[currentPlayer],
       newDiceValue,
       territoryType,
-      resultMessage
+      resultMessage,
+      locationName
     );
     
     setGameLogs(prev => [...prev, logEntry]);
