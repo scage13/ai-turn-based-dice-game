@@ -1,7 +1,7 @@
 import React from 'react';
 import './Dice.css';
 
-const Dice = ({ value, onRoll, disabled, currentPlayer }) => {
+const Dice = ({ value, onRoll, disabled, currentPlayer, currentPlayerName }) => {
   return (
     <div className="dice-container">
       <div className={`dice ${value ? 'rolled' : ''}`}>
@@ -12,7 +12,7 @@ const Dice = ({ value, onRoll, disabled, currentPlayer }) => {
         disabled={disabled}
         className="roll-button"
       >
-        {disabled ? 'Game Over' : `Player ${currentPlayer + 1} Roll`}
+        {disabled ? 'Game Over' : `${currentPlayerName}'s Turn`}
       </button>
     </div>
   );

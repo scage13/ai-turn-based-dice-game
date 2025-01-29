@@ -186,13 +186,13 @@ const GameBoard = ({ players }) => {
           ctx.beginPath();
           ctx.arc(
             pos.x, 
-            pos.y - playerConfig.offset, // Move players above waypoints
+            pos.y - playerConfig.offset,
             playerConfig.size,
             0,
             Math.PI * 2
           );
           
-          // Fill with player color
+          // Fill with player color based on their side
           ctx.fillStyle = player.color;
           ctx.fill();
           
@@ -207,7 +207,7 @@ const GameBoard = ({ players }) => {
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
           ctx.fillText(
-            player.name[0],
+            player.side === 'good' ? 'G' : 'E',
             pos.x,
             pos.y - playerConfig.offset
           );

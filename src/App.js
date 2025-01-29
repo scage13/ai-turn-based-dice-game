@@ -17,10 +17,12 @@ function App() {
   const [diceValue, setDiceValue] = useState(null);
   const [isGameOver, setIsGameOver] = useState(false);
   const [lastRollResult, setLastRollResult] = useState(null);
+  const [lastRolledPlayer, setLastRolledPlayer] = useState(null);
 
   const rollDice = useCallback(() => {
     const newDiceValue = Math.floor(Math.random() * 20) + 1;
     setDiceValue(newDiceValue);
+    setLastRolledPlayer(currentPlayer);
     
     const updatedPlayers = [...players];
     const maxPosition = gameConfig.waypoints.length - 1;
@@ -43,12 +45,16 @@ function App() {
 
     setLastRollResult(resultMessage);
 
-    const newPosition = Math.max(0, Math.min(
-      updatedPlayers[currentPlayer].position + positionChange,
-      maxPosition
-    ));
+    const currentPos = updatedPlayers[currentPlayer].position;
+    let newPosition = currentPos + positionChange;
     
-    updatedPlayers[currentPlayer].position = newPosition;
+    newPosition = Math.max(0, Math.min(newPosition, maxPosition));
+    
+    updatedPlayers[currentPlayer] = {
+      ...updatedPlayers[currentPlayer],
+      position: newPosition
+    };
+    
     setPlayers(updatedPlayers);
 
     if (newPosition === maxPosition) {
@@ -76,24 +82,38 @@ function App() {
     setDiceValue(null);
     setIsGameOver(false);
     setLastRollResult(null);
+    setLastRolledPlayer(null);
   };
 
   const handleStartGame = (settings) => {
     setGameMode(settings.mode);
-    setPlayers([
-      { 
-        id: 1, 
-        name: settings.player1.name, 
-        position: 0,
-        color: settings.player1.color
-      },
-      { 
-        id: 2, 
-        name: settings.mode === 'ai' ? "AI " + settings.player2.name : settings.player2.name, 
-        position: 0,
-        color: settings.player2.color
-      }
-    ]);
+    
+    // Create player objects
+    const goodPlayer = {
+      id: 1,
+      name: 'Good Side',
+      position: 0,
+      color: '#ACDFDD',
+      side: 'good'
+    };
+
+    const evilPlayer = {
+      id: 2,
+      name: settings.mode === 'ai' ? 'AI Evil Side' : 'Evil Side',
+      position: 0,
+      color: '#A30000',
+      side: 'evil'
+    };
+
+    // Set player order based on chosen side
+    if (settings.player1.side === 'good') {
+      setPlayers([goodPlayer, evilPlayer]);
+    } else {
+      setPlayers([evilPlayer, goodPlayer]);
+    }
+
+    // Set initial player based on chosen side
+    setCurrentPlayer(0); // Player 1 (chosen side) always goes first
     setGameStarted(true);
   };
 
@@ -103,19 +123,24 @@ function App() {
 
   return (
     <div className="App">
-      <GameBoard players={players} />
+      <GameBoard 
+        players={players}
+        currentPlayer={currentPlayer}
+      />
       <div className="game-controls">
         <PlayerInfo 
-          players={players} 
+          players={players}
           currentPlayer={currentPlayer}
           isGameOver={isGameOver}
           lastRollResult={lastRollResult}
+          lastRolledPlayer={lastRolledPlayer}
         />
         <Dice 
-          value={diceValue} 
+          value={diceValue}
           onRoll={rollDice}
           disabled={isGameOver || (gameMode === 'ai' && currentPlayer === 1)}
           currentPlayer={currentPlayer}
+          currentPlayerName={players[currentPlayer].name}
         />
         {isGameOver && (
           <div className="game-over">
