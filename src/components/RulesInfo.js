@@ -1,17 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './RulesInfo.css';
+import WaypointDialog from './WaypointDialog';
 
 const RulesInfo = ({ currentPlayer, players, gameConfig }) => {
+  const [showDialog, setShowDialog] = useState(false);
   const currentWaypoint = gameConfig.waypoints[players[currentPlayer].position];
   const territoryType = currentWaypoint.locationType;
   const isHostile = territoryType !== players[currentPlayer].side && territoryType !== 'common';
 
+  const handleLocationClick = () => {
+    setShowDialog(true);
+  };
+
   return (
     <div className="rules-info">
       <div className="location-header">
-        <h2>Current Location: {currentWaypoint.locationName}</h2>
+        <h2 
+          onClick={handleLocationClick}
+          className="clickable-title"
+        >
+          Current Location: {currentWaypoint.locationName}
+        </h2>
         <div 
-          className="location-image"
+          className="location-image clickable" 
+          onClick={handleLocationClick}
           style={{ 
             backgroundImage: `url(${currentWaypoint.background})`,
             width: '100%',
@@ -19,7 +31,8 @@ const RulesInfo = ({ currentPlayer, players, gameConfig }) => {
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             borderRadius: '8px',
-            marginBottom: '1rem'
+            marginBottom: '1rem',
+            cursor: 'pointer'
           }}
         />
       </div>
@@ -56,6 +69,13 @@ const RulesInfo = ({ currentPlayer, players, gameConfig }) => {
           <span>Success: Move forward 1 space</span>
         </div>
       </div>
+
+      {showDialog && (
+        <WaypointDialog 
+          waypoint={currentWaypoint}
+          onClose={() => setShowDialog(false)}
+        />
+      )}
     </div>
   );
 };

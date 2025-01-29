@@ -9,7 +9,8 @@ const Toolbar = ({
   currentPlayerName = '',
   diceValue = null,
   logs = [],
-  isGameOver = false 
+  isGameOver = false,
+  currentPlayer // Add this prop to get current player info
 }) => {
   const [showLogs, setShowLogs] = useState(false);
   const [isRolling, setIsRolling] = useState(false);
@@ -20,10 +21,20 @@ const Toolbar = ({
       setIsRolling(true);
       const timer = setTimeout(() => {
         setIsRolling(false);
-      }, 500); // Match the animation duration
+      }, 500);
       return () => clearTimeout(timer);
     }
   }, [diceValue]);
+
+  // Get player-specific styles
+  const getPlayerStyle = () => {
+    const isEvil = currentPlayer?.side === 'evil';
+    return {
+      background: isEvil ? '#A30000' : '#ACDFDD',
+      color: isEvil ? '#ffffff' : '#2c3e50',
+      borderColor: isEvil ? '#800000' : '#7FB3B1'
+    };
+  };
 
   // Handle roll click with animation
   const handleRollClick = () => {
@@ -58,8 +69,14 @@ const Toolbar = ({
             <button 
               onClick={handleRollClick} 
               disabled={disabled}
-              className="roll-button"
+              className={`roll-button ${currentPlayer?.side || ''}`}
+              style={getPlayerStyle()}
             >
+              <img 
+                src={`player/${currentPlayer?.side || 'good'}.png`}
+                alt=""
+                className="player-icon"
+              />
               {isGameOver ? 'Game Over' : `${currentPlayerName}'s Turn`}
             </button>
           </div>

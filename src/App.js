@@ -189,6 +189,7 @@ function App() {
         onRoll={rollDice}
         disabled={isGameOver || (gameMode === 'ai' && currentPlayer === 1)}
         currentPlayerName={players[currentPlayer].name}
+        currentPlayer={players[currentPlayer]}
         diceValue={diceValue}
         logs={gameLogs}
         isGameOver={isGameOver}
