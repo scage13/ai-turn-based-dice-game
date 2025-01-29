@@ -1,28 +1,32 @@
 .App {
   text-align: center;
   padding: 20px;
-  max-width: 800px;
+  margin: 0 auto;
+  padding-top: 70px; /* Space for fixed toolbar */
+  max-width: none; /* Remove max-width constraint */
+}
+
+.game-layout {
+  display: flex;
+  gap: 2rem;
+  padding: 1rem;
+  max-width: 1400px; /* Add max-width to the layout instead */
   margin: 0 auto;
 }
 
-.game-controls {
-  margin-top: 20px;
+.game-sidebar {
+  flex: 0 0 300px;
+  min-width: 300px; /* Ensure sidebar doesn't shrink too much */
 }
 
-.game-over {
-  margin-top: 20px;
-}
+/* Add responsive layout */
+@media (max-width: 1200px) {
+  .game-layout {
+    flex-direction: column;
+  }
 
-.game-over button {
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.game-over button:hover {
-  background-color: #45a049;
+  .game-sidebar {
+    flex: none;
+    width: 100%;
+  }
 }

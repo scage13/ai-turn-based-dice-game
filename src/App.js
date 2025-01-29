@@ -1,13 +1,13 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import './App.css';
 import GameBoard from './components/GameBoard';
-import Dice from './components/Dice';
 import StartPage from './components/StartPage';
 import { gameConfig } from './config/gameConfig';
 import RulesInfo from './components/RulesInfo';
 import { ToastContainer } from 'react-toastify';
 import { showTurnResult } from './services/ToastService';
-import GameLog from './components/GameLog';
+import Toolbar from './components/Toolbar';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const [gameStarted, setGameStarted] = useState(false);
@@ -150,13 +150,47 @@ function App() {
     setGameStarted(true);
   };
 
+  const handleNewGame = () => {
+    setGameStarted(false);
+    setPlayers([
+      { id: 1, name: "Good Side", position: 0, color: '#ACDFDD' },
+      { id: 2, name: "Evil Side", position: 0, color: '#A30000' }
+    ]);
+    setCurrentPlayer(0);
+    setDiceValue(null);
+    setIsGameOver(false);
+    setGameLogs([]);
+  };
+
   if (!gameStarted) {
     return <StartPage onStartGame={handleStartGame} />;
   }
 
   return (
     <div className="App">
-      <ToastContainer />
+      <ToastContainer
+        position="bottom-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+        limit={1}
+        style={{ bottom: '20px' }}
+      />
+      <Toolbar 
+        onNewGame={handleNewGame}
+        onRoll={rollDice}
+        disabled={isGameOver || (gameMode === 'ai' && currentPlayer === 1)}
+        currentPlayerName={players[currentPlayer].name}
+        diceValue={diceValue}
+        logs={gameLogs}
+        isGameOver={isGameOver}
+      />
       <div className="game-layout">
         <GameBoard players={players} currentPlayer={currentPlayer} />
         <div className="game-sidebar">
@@ -164,14 +198,6 @@ function App() {
             currentPlayer={currentPlayer}
             players={players}
             gameConfig={gameConfig}
-          />
-          <GameLog logs={gameLogs} />
-          <Dice 
-            value={diceValue}
-            onRoll={rollDice}
-            disabled={isGameOver || (gameMode === 'ai' && currentPlayer === 1)}
-            currentPlayer={currentPlayer}
-            currentPlayerName={players[currentPlayer].name}
           />
         </div>
       </div>
