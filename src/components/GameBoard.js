@@ -1,23 +1,22 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import './GameBoard.css';
 import { gameConfig } from '../config/gameConfig';
 import WaypointDialog from './WaypointDialog';
 
 const GameBoard = ({ players, currentPlayer }) => {
   const canvasRef = useRef(null);
+  const imagesRef = useRef({});  // Store loaded images
   const [selectedWaypoint, setSelectedWaypoint] = useState(null);
   const [hoveredWaypoint, setHoveredWaypoint] = useState(null);
   const waypoints = Array.from({ length: gameConfig.waypoints.length }, (_, i) => i);
   
-  // Calculate waypoint positions
-  const getWaypointPosition = (index, totalPoints) => {
-    // Check if custom position exists in config
+  // Move getWaypointPosition outside drawCanvas as it's used by multiple functions
+  const getWaypointPosition = useCallback((index, totalPoints) => {
     const customPosition = gameConfig.waypoints.find(wp => wp.id === index);
     if (customPosition) {
       return customPosition.coordinates;
     }
     
-    // Fallback to default layout if no custom position found
     const { size } = gameConfig.waypoint;
     const { horizontal, vertical } = gameConfig.waypoint.spacing;
     const horizontalSpacing = size * horizontal;
@@ -30,33 +29,15 @@ const GameBoard = ({ players, currentPlayer }) => {
       x: column * horizontalSpacing + (row * horizontalSpacing / 2) + size,
       y: row * verticalSpacing + size + 50
     };
-  };
+  }, []);
 
-  const drawHexagon = (ctx, x, y, size) => {
-    const numberOfSides = 6;
-    const angle = (2 * Math.PI) / numberOfSides;
-    
-    ctx.beginPath();
-    for (let i = 0; i < numberOfSides; i++) {
-      const xPoint = x + size * Math.cos(angle * i - Math.PI / 6);
-      const yPoint = y + size * Math.sin(angle * i - Math.PI / 6);
-      if (i === 0) {
-        ctx.moveTo(xPoint, yPoint);
-      } else {
-        ctx.lineTo(xPoint, yPoint);
-      }
-    }
-    ctx.closePath();
-  };
-
-  // Add click handler
-  const handleCanvasClick = (event) => {
+  // Move event handlers outside drawCanvas
+  const handleCanvasClick = useCallback((event) => {
     const canvas = canvasRef.current;
     const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
 
-    // Check if click is within any waypoint
     gameConfig.waypoints.forEach(waypoint => {
       const pos = getWaypointPosition(waypoint.id, gameConfig.waypoints.length);
       const distance = Math.sqrt(
@@ -67,10 +48,9 @@ const GameBoard = ({ players, currentPlayer }) => {
         setSelectedWaypoint(waypoint);
       }
     });
-  };
+  }, [getWaypointPosition]);
 
-  // Add mousemove handler
-  const handleCanvasMouseMove = (event) => {
+  const handleCanvasMouseMove = useCallback((event) => {
     const canvas = canvasRef.current;
     const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
@@ -93,19 +73,10 @@ const GameBoard = ({ players, currentPlayer }) => {
     if (!isOverWaypoint) {
       setHoveredWaypoint(null);
     }
-  };
+  }, [getWaypointPosition]);
 
+  // Move image loading to a separate effect that runs once
   useEffect(() => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    
-    // Set canvas size from config
-    canvas.width = gameConfig.canvas.width;
-    canvas.height = gameConfig.canvas.height;
-    
-    // Clear canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
     const loadImages = async () => {
       const images = {};
       const loadImage = (src) => {
@@ -118,10 +89,9 @@ const GameBoard = ({ players, currentPlayer }) => {
       };
 
       try {
-        // Load background image if configured
-        let backgroundImage = null;
+        // Load background image
         if (gameConfig.canvas.background?.image) {
-          backgroundImage = await loadImage(gameConfig.canvas.background.image);
+          images.background = await loadImage(gameConfig.canvas.background.image);
         }
 
         // Load waypoint images
@@ -133,134 +103,143 @@ const GameBoard = ({ players, currentPlayer }) => {
         }
 
         // Load player icons
-        const playerIcons = {
-          good: await loadImage('player/good.png'),
-          evil: await loadImage('player/evil.png')
-        };
+        images.playerGood = await loadImage('player/good.png');
+        images.playerEvil = await loadImage('player/evil.png');
 
-        // Draw background image if exists
-        if (backgroundImage) {
-          ctx.save();
-          
-          // Set background opacity
-          ctx.globalAlpha = gameConfig.canvas.background.opacity ?? 1;
-          
-          // Calculate background drawing parameters based on scale setting
-          let dx = 0, dy = 0, dWidth = canvas.width, dHeight = canvas.height;
-          
-          if (gameConfig.canvas.background.scale === 'cover') {
-            const scale = Math.max(
-              canvas.width / backgroundImage.width,
-              canvas.height / backgroundImage.height
-            );
-            dWidth = backgroundImage.width * scale;
-            dHeight = backgroundImage.height * scale;
-            dx = (canvas.width - dWidth) / 2;
-            dy = (canvas.height - dHeight) / 2;
-          } else if (gameConfig.canvas.background.scale === 'contain') {
-            const scale = Math.min(
-              canvas.width / backgroundImage.width,
-              canvas.height / backgroundImage.height
-            );
-            dWidth = backgroundImage.width * scale;
-            dHeight = backgroundImage.height * scale;
-            dx = (canvas.width - dWidth) / 2;
-            dy = (canvas.height - dHeight) / 2;
-          }
-          
-          ctx.drawImage(backgroundImage, dx, dy, dWidth, dHeight);
-          ctx.restore();
-        }
-
-        // Start drawing with transformation
-        ctx.save();
-        
-        // Draw connecting lines
-        ctx.beginPath();
-        waypoints.forEach((waypoint, index) => {
-          const pos = getWaypointPosition(waypoint, waypoints.length);
-          if (index === 0) {
-            ctx.moveTo(pos.x, pos.y);
-          } else {
-            ctx.lineTo(pos.x, pos.y);
-          }
-        });
-        const { connectionLine } = gameConfig;
-        ctx.strokeStyle = connectionLine.color;
-        ctx.lineWidth = connectionLine.width;
-        ctx.stroke();
-
-        // Draw waypoints
-        waypoints.forEach((waypointIndex) => {
-          const pos = getWaypointPosition(waypointIndex, waypoints.length);
-          const { size, style } = gameConfig.waypoint;
-          const waypoint = gameConfig.waypoints.find(wp => wp.id === waypointIndex);
-          
-          // Check if this waypoint is active (has current player)
-          const activePlayer = players.find(p => p.position === waypointIndex && players.indexOf(p) === currentPlayer);
-          
-          drawHexagon(ctx, pos.x, pos.y, size);
-          
-          // Set waypoint opacity
-          ctx.save();
-          ctx.globalAlpha = style.opacity ?? 1;
-          
-          // Draw background image or gradient
-          const backgroundImage = waypoint?.background ? images[waypointIndex] : images.default;
-          if (backgroundImage) {
-            ctx.clip();
-            ctx.drawImage(
-              backgroundImage,
-              pos.x - size,
-              pos.y - size,
-              size * 2,
-              size * 2
-            );
-          } else {
-            const gradient = ctx.createRadialGradient(
-              pos.x, pos.y, 0,
-              pos.x, pos.y, size
-            );
-            gradient.addColorStop(0, style.gradient.inner);
-            gradient.addColorStop(1, style.gradient.outer);
-            ctx.fillStyle = gradient;
-            ctx.fill();
-          }
-
-          // Reset opacity for stroke and text
-          ctx.restore();
-
-          // Draw border with active player color if this is current waypoint
-          ctx.strokeStyle = activePlayer ? activePlayer.color : style.strokeColor;
-          ctx.lineWidth = style.strokeWidth;
-          ctx.stroke();
-        });
-
-        // Draw players after waypoints
-        players.forEach((player) => {
-          const pos = getWaypointPosition(player.position, waypoints.length);
-          const { player: playerConfig } = gameConfig;
-          
-          // Calculate icon position (centered above waypoint)
-          console.log(player, playerConfig);
-          const iconSize = playerConfig.size * 2; // Adjust size as needed
-          const x = pos.x - iconSize / 2;
-          const y = pos.y - playerConfig.offset - iconSize / 2;
-          
-          // Draw player icon
-          const icon = playerIcons[player.side];
-          ctx.drawImage(icon, x, y, iconSize, iconSize);
-        });
-
-        // Restore the canvas context transformation
-        ctx.restore();
+        imagesRef.current = images;
+        drawCanvas(); // Initial draw after images are loaded
       } catch (error) {
         console.error('Error loading images:', error);
       }
     };
 
     loadImages();
-  }, [players, waypoints, currentPlayer]);
+  }, []); // Empty dependency array - run once on mount
+
+  // Separate the drawing logic into its own function
+  const drawCanvas = useCallback(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    const images = imagesRef.current;
+
+    if (!canvas || !ctx || Object.keys(images).length === 0) return;
+
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw background
+    if (images.background) {
+      ctx.save();
+      ctx.globalAlpha = gameConfig.canvas.background.opacity ?? 1;
+      ctx.drawImage(images.background, 0, 0, canvas.width, canvas.height);
+      ctx.restore();
+    }
+
+    // Draw connecting lines
+    ctx.beginPath();
+    waypoints.forEach((waypoint, index) => {
+      const pos = getWaypointPosition(waypoint, waypoints.length);
+      if (index === 0) {
+        ctx.moveTo(pos.x, pos.y);
+      } else {
+        ctx.lineTo(pos.x, pos.y);
+      }
+    });
+    const { connectionLine } = gameConfig;
+    ctx.strokeStyle = connectionLine.color;
+    ctx.lineWidth = connectionLine.width;
+    ctx.stroke();
+
+    // Draw waypoints
+    waypoints.forEach((waypointIndex) => {
+      const pos = getWaypointPosition(waypointIndex, waypoints.length);
+      const { size, style } = gameConfig.waypoint;
+      const waypoint = gameConfig.waypoints.find(wp => wp.id === waypointIndex);
+      
+      // Check if this waypoint is active (has current player)
+      const activePlayer = players.find(p => p.position === waypointIndex && players.indexOf(p) === currentPlayer);
+      
+      const drawHexagon = (ctx, x, y, size) => {
+        const numberOfSides = 6;
+        const angle = (2 * Math.PI) / numberOfSides;
+        
+        ctx.beginPath();
+        for (let i = 0; i < numberOfSides; i++) {
+          const xPoint = x + size * Math.cos(angle * i - Math.PI / 6);
+          const yPoint = y + size * Math.sin(angle * i - Math.PI / 6);
+          if (i === 0) {
+            ctx.moveTo(xPoint, yPoint);
+          } else {
+            ctx.lineTo(xPoint, yPoint);
+          }
+        }
+        ctx.closePath();
+      };
+
+      drawHexagon(ctx, pos.x, pos.y, size);
+      
+      // Set waypoint opacity
+      ctx.save();
+      ctx.globalAlpha = style.opacity ?? 1;
+      
+      // Draw background image or gradient
+      const backgroundImage = waypoint?.background ? images[waypointIndex] : images.default;
+      if (backgroundImage) {
+        ctx.clip();
+        ctx.drawImage(
+          backgroundImage,
+          pos.x - size,
+          pos.y - size,
+          size * 2,
+          size * 2
+        );
+      } else {
+        const gradient = ctx.createRadialGradient(
+          pos.x, pos.y, 0,
+          pos.x, pos.y, size
+        );
+        gradient.addColorStop(0, style.gradient.inner);
+        gradient.addColorStop(1, style.gradient.outer);
+        ctx.fillStyle = gradient;
+        ctx.fill();
+      }
+
+      // Reset opacity for stroke and text
+      ctx.restore();
+
+      // Draw border with active player color if this is current waypoint
+      ctx.strokeStyle = activePlayer ? activePlayer.color : style.strokeColor;
+      ctx.lineWidth = style.strokeWidth;
+      ctx.stroke();
+    });
+
+    // Draw players after waypoints
+    players.forEach((player) => {
+      const pos = getWaypointPosition(player.position, waypoints.length);
+      const { player: playerConfig } = gameConfig;
+      
+      // Calculate icon position (centered above waypoint)
+      const iconSize = playerConfig.size * 2;
+      const x = pos.x - iconSize / 2;
+      const y = pos.y - playerConfig.offset - iconSize / 2;
+      
+      // Draw player icon based on side
+      const icon = player.side === 'good' ? images.playerGood : images.playerEvil;
+      ctx.drawImage(icon, x, y, iconSize, iconSize);
+    });
+  }, [waypoints, players, currentPlayer, getWaypointPosition]);
+
+  // Update canvas when players or current player changes
+  useEffect(() => {
+    drawCanvas();
+  }, [drawCanvas]);
+
+  // Set up canvas size - only needs to happen once
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    canvas.width = gameConfig.canvas.width;
+    canvas.height = gameConfig.canvas.height;
+  }, []);
 
   return (
     <div className="game-board">
