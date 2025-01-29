@@ -11,7 +11,7 @@ const GameBoard = ({ players }) => {
     // Check if custom position exists in config
     const customPosition = gameConfig.waypoints.find(wp => wp.id === index);
     if (customPosition) {
-      return { x: customPosition.x, y: customPosition.y };
+      return customPosition.coordinates;
     }
     
     // Fallback to default layout if no custom position found
@@ -76,10 +76,10 @@ const GameBoard = ({ players }) => {
         }
 
         // Load waypoint images
-        images.default = await loadImage(gameConfig.waypointBackgrounds.default);
-        for (const [key, src] of Object.entries(gameConfig.waypointBackgrounds)) {
-          if (key !== 'default') {
-            images[key] = await loadImage(src);
+        images.default = await loadImage(gameConfig.waypoint.defaultBackground);
+        for (const waypoint of gameConfig.waypoints) {
+          if (waypoint.background) {
+            images[waypoint.id] = await loadImage(waypoint.background);
           }
         }
 
@@ -136,14 +136,15 @@ const GameBoard = ({ players }) => {
         ctx.stroke();
 
         // Draw waypoints
-        waypoints.forEach((waypoint) => {
-          const pos = getWaypointPosition(waypoint, waypoints.length);
+        waypoints.forEach((waypointIndex) => {
+          const pos = getWaypointPosition(waypointIndex, waypoints.length);
           const { size, style } = gameConfig.waypoint;
+          const waypoint = gameConfig.waypoints.find(wp => wp.id === waypointIndex);
 
           drawHexagon(ctx, pos.x, pos.y, size);
           
           // Draw background image or gradient
-          const backgroundImage = images[waypoint] || images.default;
+          const backgroundImage = waypoint?.background ? images[waypointIndex] : images.default;
           if (backgroundImage) {
             ctx.save();
             ctx.clip();
@@ -175,7 +176,7 @@ const GameBoard = ({ players }) => {
           ctx.font = `bold ${style.fontSize}px ${style.fontFamily}`;
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
-          ctx.fillText(waypoint.toString(), pos.x, pos.y);
+          ctx.fillText(waypointIndex.toString(), pos.x, pos.y);
         });
 
         // Draw players

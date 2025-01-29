@@ -16,42 +16,114 @@ export const gameConfig = {
       fontSize: 24,
       fontColor: '#fff',
       fontFamily: 'Monospace'
-    }
+    },
+    defaultBackground: 'waypoints/default.webp',
   },
 
-  // Custom positions for each waypoint
-  // If not specified, will use default 2-row layout
+  // Combined waypoint information
   waypoints: [
-    { id: 0, x: 100, y: 100 },    
-    { id: 1, x: 200, y: 250 },   
-    { id: 2, x: 300, y: 150 },   
-    { id: 3, x: 400, y: 250 },   
-    { id: 4, x: 500, y: 150 },   
-    { id: 5, x: 600, y: 250 },   
-    { id: 6, x: 700, y: 150 },   
-    { id: 7, x: 800, y: 250 },   
-    { id: 8, x: 900, y: 150 },   
-    { id: 9, x: 800, y: 250 },   
-    { id: 10, x: 900, y: 150 },  
+    {
+      id: 0,
+      coordinates: { x: 100, y: 100 },
+      background: 'waypoints/shire.webp',
+      rulesInfo: 'Start your journey here. Roll the dice to move forward.',
+      storyInfo: 'The peaceful Shire, where Hobbits dwell and the great journey begins.'
+    },
+    {
+      id: 1,
+      coordinates: { x: 200, y: 250 },
+      background: 'waypoints/barrow-downs.webp',
+      rulesInfo: 'Beware of the Barrow-wights!',
+      storyInfo: 'The Barrow-downs, an ancient and dangerous place filled with evil spirits.'
+    },
+    {
+      id: 2,
+      coordinates: { x: 300, y: 150 },
+      background: 'waypoints/barrow-downs.webp',
+      rulesInfo: {},
+      storyInfo: {
+        title: 'Waypoint 3',
+        description: 'Journey continues...'
+      }
+    },
+    {
+      id: 3,
+      coordinates: { x: 400, y: 250 },
+      background: 'waypoints/barrow-downs.webp',
+      rulesInfo: {},
+      storyInfo: {
+        title: 'Waypoint 4',
+        description: 'Another milestone...'
+      }
+    },
+    {
+      id: 4,
+      coordinates: { x: 500, y: 150 },
+      background: 'waypoints/barrow-downs.webp',
+      rulesInfo: {},
+      storyInfo: {
+        title: 'Waypoint 5',
+        description: 'The path ahead...'
+      }
+    },
+    {
+      id: 5,
+      coordinates: { x: 600, y: 250 },
+      background: 'waypoints/barrow-downs.webp',
+      rulesInfo: {},
+      storyInfo: {
+        title: 'Waypoint 6',
+        description: 'Moving forward...'
+      }
+    },
+    {
+      id: 6,
+      coordinates: { x: 700, y: 150 },
+      background: 'waypoints/barrow-downs.webp',
+      rulesInfo: {},
+      storyInfo: {
+        title: 'Waypoint 7',
+        description: 'The journey continues...'
+      }
+    },
+    {
+      id: 7,
+      coordinates: { x: 800, y: 250 },
+      background: 'waypoints/barrow-downs.webp',
+      rulesInfo: {},
+      storyInfo: {
+        title: 'Waypoint 8',
+        description: 'Almost there...'
+      }
+    },
+    {
+      id: 8,
+      coordinates: { x: 900, y: 150 },
+      background: 'waypoints/barrow-downs.webp',
+      rulesInfo: {},
+      storyInfo: {
+        title: 'Waypoint 9',
+        description: 'The final stretch...'
+      }
+    },
+    {
+      id: 9,
+      coordinates: { x: 800, y: 250 },
+      background: 'waypoints/barrow-downs.webp',
+      rulesInfo: {},
+      storyInfo: {
+        title: 'Waypoint 10',
+        description: 'Nearly at the end...'
+      }
+    },
+    {
+      id: 10,
+      coordinates: { x: 900, y: 150 },
+      background: 'waypoints/barrow-downs.webp',
+      rulesInfo: 'Reach this point to win the game!',
+      storyInfo: 'The final destination of your epic journey.'
+    }
   ],
-
-  // Background images for waypoints
-  // You can specify different images for different waypoints
-  waypointBackgrounds: {
-    default: 'waypoints/default.webp',  // Default background
-    // Specific backgrounds for waypoints
-    0: 'waypoints/shire.webp',
-    1: 'waypoints/barrow-downs.webp',
-    2: 'waypoints/barrow-downs.webp',
-    3: 'waypoints/barrow-downs.webp',
-    4: 'waypoints/barrow-downs.webp',
-    5: 'waypoints/barrow-downs.webp',
-    6: 'waypoints/barrow-downs.webp',
-    7: 'waypoints/barrow-downs.webp',
-    8: 'waypoints/barrow-downs.webp',
-    9: 'waypoints/barrow-downs.webp',
-    10: 'waypoints/barrow-downs.webp',
-  },
 
   // Canvas settings
   canvas: {
