@@ -83,6 +83,12 @@ const GameBoard = ({ players }) => {
           }
         }
 
+        // Load player icons
+        const playerIcons = {
+          good: await loadImage('player/good.png'),
+          evil: await loadImage('player/evil.png')
+        };
+
         // Draw background image if exists
         if (backgroundImage) {
           ctx.save();
@@ -182,35 +188,14 @@ const GameBoard = ({ players }) => {
           const pos = getWaypointPosition(player.position, waypoints.length);
           const { player: playerConfig } = gameConfig;
           
-          // Draw player circle
-          ctx.beginPath();
-          ctx.arc(
-            pos.x, 
-            pos.y - playerConfig.offset,
-            playerConfig.size,
-            0,
-            Math.PI * 2
-          );
+          // Calculate icon position (centered above waypoint)
+          const iconSize = playerConfig.size * 2; // Adjust size as needed
+          const x = pos.x - iconSize / 2;
+          const y = pos.y - playerConfig.offset - iconSize / 2;
           
-          // Fill with player color based on their side
-          ctx.fillStyle = player.color;
-          ctx.fill();
-          
-          // Add white border
-          ctx.strokeStyle = playerConfig.style.strokeColor;
-          ctx.lineWidth = playerConfig.style.strokeWidth;
-          ctx.stroke();
-          
-          // Draw player initial/number
-          ctx.fillStyle = playerConfig.style.fontColor;
-          ctx.font = `bold ${playerConfig.style.fontSize}px ${playerConfig.style.fontFamily}`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(
-            player.side === 'good' ? 'G' : 'E',
-            pos.x,
-            pos.y - playerConfig.offset
-          );
+          // Draw player icon
+          const icon = playerIcons[player.side];
+          ctx.drawImage(icon, x, y, iconSize, iconSize);
         });
 
         // Restore the canvas context transformation

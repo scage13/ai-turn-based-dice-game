@@ -203,20 +203,20 @@ export const gameConfig = {
 
   // Player marker settings
   player: {
-    size: 15, // Reduced size for better fit
-    offset: 45, // Distance above waypoint
+    size: 32,           // This will be the base size for the icon
+    offset: 40,         // Distance above waypoint
     style: {
-      strokeColor: "#fff",
+      strokeColor: '#fff',
       strokeWidth: 2,
-      fontSize: 14, // Reduced font size
-      fontFamily: "Arial",
-      fontColor: "#fff",
-    },
+      fontSize: 14,
+      fontFamily: 'Arial',
+      fontColor: '#fff'
+    }
   },
 
   // Connection line style
   connectionLine: {
-    color: "#666",
+    color: "#fff",
     width: 3,
   },
 }; 
