@@ -5,7 +5,7 @@
   min-height: 100vh;
   background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
   padding: 20px;
-  font-family: 'MedievalSharp', cursive;
+  font-family: 'Oldenburg', cursive;
 }
 
 .start-page-content {
@@ -22,7 +22,7 @@
   color: #2c3e50;
   margin-bottom: 40px;
   text-align: center;
-  font-family: 'MedievalSharp', cursive;
+  font-family: 'Oldenburg', cursive;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
   letter-spacing: 2px;
 }
@@ -34,7 +34,7 @@
 .mode-selection h2, .side-selection h2 {
   color: #34495e;
   margin-bottom: 25px;
-  font-family: 'MedievalSharp', cursive;
+  font-family: 'Oldenburg', cursive;
   font-size: 1.5em;
   letter-spacing: 1px;
 }
@@ -58,7 +58,7 @@
   cursor: pointer;
   transition: all 0.3s ease;
   min-width: 200px;
-  font-family: 'MedievalSharp', cursive;
+  font-family: 'Oldenburg', cursive;
   letter-spacing: 1px;
 }
 
@@ -88,7 +88,7 @@
   margin-bottom: 30px;
   background: white;
   transition: all 0.3s ease;
-  font-family: 'MedievalSharp', cursive;
+  font-family: 'Oldenburg', cursive;
 }
 
 .side-select:hover {
@@ -140,7 +140,7 @@
   margin: 0;
   font-size: 0.8em;
   color: #666;
-  font-family: 'MedievalSharp', cursive;
+  font-family: 'Oldenburg', cursive;
 }
 
 .player-details p {
@@ -148,7 +148,7 @@
   font-size: 1em;
   color: #2c3e50;
   font-weight: bold;
-  font-family: 'MedievalSharp', cursive;
+  font-family: 'Oldenburg', cursive;
 }
 
 .start-button {
@@ -164,7 +164,7 @@
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 1px;
-  font-family: 'MedievalSharp', cursive;
+  font-family: 'Oldenburg', cursive;
 }
 
 .start-button:hover {

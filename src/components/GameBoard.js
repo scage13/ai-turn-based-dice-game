@@ -75,48 +75,7 @@ const GameBoard = ({ players, currentPlayer }) => {
     }
   }, [getWaypointPosition]);
 
-  // Move image loading to a separate effect that runs once
-  useEffect(() => {
-    const loadImages = async () => {
-      const images = {};
-      const loadImage = (src) => {
-        return new Promise((resolve, reject) => {
-          const img = new Image();
-          img.onload = () => resolve(img);
-          img.onerror = reject;
-          img.src = src;
-        });
-      };
-
-      try {
-        // Load background image
-        if (gameConfig.canvas.background?.image) {
-          images.background = await loadImage(gameConfig.canvas.background.image);
-        }
-
-        // Load waypoint images
-        images.default = await loadImage(gameConfig.waypoint.defaultBackground);
-        for (const waypoint of gameConfig.waypoints) {
-          if (waypoint.background) {
-            images[waypoint.id] = await loadImage(waypoint.background);
-          }
-        }
-
-        // Load player icons
-        images.playerGood = await loadImage('player/good.png');
-        images.playerEvil = await loadImage('player/evil.png');
-
-        imagesRef.current = images;
-        drawCanvas(); // Initial draw after images are loaded
-      } catch (error) {
-        console.error('Error loading images:', error);
-      }
-    };
-
-    loadImages();
-  }, []); // Empty dependency array - run once on mount
-
-  // Separate the drawing logic into its own function
+  // Move drawCanvas before the useEffect
   const drawCanvas = useCallback(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
@@ -156,6 +115,13 @@ const GameBoard = ({ players, currentPlayer }) => {
       const { size, style } = gameConfig.waypoint;
       const waypoint = gameConfig.waypoints.find(wp => wp.id === waypointIndex);
       
+      // Add hover effect
+      const isHovered = hoveredWaypoint?.id === waypointIndex;
+      if (isHovered) {
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = 'rgba(255, 255, 255, 0.5)';
+      }
+
       // Check if this waypoint is active (has current player)
       const activePlayer = players.find(p => p.position === waypointIndex && players.indexOf(p) === currentPlayer);
       
@@ -211,6 +177,10 @@ const GameBoard = ({ players, currentPlayer }) => {
       ctx.strokeStyle = activePlayer ? activePlayer.color : style.strokeColor;
       ctx.lineWidth = style.strokeWidth;
       ctx.stroke();
+
+      if (isHovered) {
+        ctx.shadowBlur = 0;
+      }
     });
 
     // Draw players after waypoints
@@ -229,7 +199,48 @@ const GameBoard = ({ players, currentPlayer }) => {
       const icon = player.side === 'good' ? images.playerGood : images.playerEvil;
       ctx.drawImage(icon, x, y, iconSize, iconSize);
     });
-  }, [waypoints, players, currentPlayer, getWaypointPosition]);
+  }, [waypoints, players, currentPlayer, getWaypointPosition, hoveredWaypoint]);
+
+  // Now the image loading effect
+  useEffect(() => {
+    const loadImages = async () => {
+      const images = {};
+      const loadImage = (src) => {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = reject;
+          img.src = src;
+        });
+      };
+
+      try {
+        // Load background image
+        if (gameConfig.canvas.background?.image) {
+          images.background = await loadImage(gameConfig.canvas.background.image);
+        }
+
+        // Load waypoint images
+        images.default = await loadImage(gameConfig.waypoint.defaultBackground);
+        for (const waypoint of gameConfig.waypoints) {
+          if (waypoint.background) {
+            images[waypoint.id] = await loadImage(waypoint.background);
+          }
+        }
+
+        // Load player icons
+        images.playerGood = await loadImage('player/good.png');
+        images.playerEvil = await loadImage('player/evil.png');
+
+        imagesRef.current = images;
+        drawCanvas(); // Initial draw after images are loaded
+      } catch (error) {
+        console.error('Error loading images:', error);
+      }
+    };
+
+    loadImages();
+  }, [drawCanvas]);
 
   // Update canvas when players or current player changes
   useEffect(() => {

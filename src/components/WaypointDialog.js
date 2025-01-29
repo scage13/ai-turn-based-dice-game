@@ -12,18 +12,13 @@ const WaypointDialog = ({ waypoint, onClose }) => {
 
   const handleClose = () => {
     setIsClosing(true);
-    setTimeout(onClose, 300); // Match animation duration
+    setTimeout(onClose, 300);
   };
 
   if (!waypoint) return null;
 
-  const getTypeColor = (type) => {
-    switch (type) {
-      case 'good': return '#ACDFDD';
-      case 'evil': return '#A30000';
-      default: return '#8B7355';
-    }
-  };
+  // Capitalize first letter of territory type
+  const territoryType = waypoint.locationType.charAt(0).toUpperCase() + waypoint.locationType.slice(1);
 
   return (
     <div 
@@ -36,21 +31,19 @@ const WaypointDialog = ({ waypoint, onClose }) => {
       >
         <button className="close-button" onClick={handleClose}>×</button>
         
-        <div className="dialog-header" style={{ backgroundColor: getTypeColor(waypoint.locationType) }}>
+        <div className="dialog-header">
           <div 
             className="location-image" 
             style={{ backgroundImage: `url(${waypoint.background})` }}
           />
-          <h2>{waypoint.locationName}</h2>
-          <div className="location-type">
-            {waypoint.locationType.charAt(0).toUpperCase() + waypoint.locationType.slice(1)} Territory
-          </div>
         </div>
 
         <div className="dialog-content">
+          <h2>{waypoint.locationName}</h2>
+          <div className="location-type">{territoryType} Territory</div>
           <div className="location-description">
-            {waypoint.locationDescription.split('\n').map((paragraph, index) => (
-              <p key={index}>{paragraph.trim()}</p>
+            {waypoint.locationDescription.split('\n\n').map((paragraph, index) => (
+              <p key={index}>{paragraph}</p>
             ))}
           </div>
         </div>

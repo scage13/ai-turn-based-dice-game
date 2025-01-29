@@ -2,10 +2,12 @@ import React, { useState, useCallback, useEffect } from 'react';
 import './App.css';
 import GameBoard from './components/GameBoard';
 import Dice from './components/Dice';
-import PlayerInfo from './components/PlayerInfo';
 import StartPage from './components/StartPage';
 import { gameConfig } from './config/gameConfig';
 import RulesInfo from './components/RulesInfo';
+import { ToastContainer } from 'react-toastify';
+import { showTurnResult } from './services/ToastService';
+import GameLog from './components/GameLog';
 
 function App() {
   const [gameStarted, setGameStarted] = useState(false);
@@ -17,13 +19,11 @@ function App() {
   const [currentPlayer, setCurrentPlayer] = useState(0);
   const [diceValue, setDiceValue] = useState(null);
   const [isGameOver, setIsGameOver] = useState(false);
-  const [lastRollResult, setLastRollResult] = useState(null);
-  const [lastRolledPlayer, setLastRolledPlayer] = useState(null);
+  const [gameLogs, setGameLogs] = useState([]);
 
   const rollDice = useCallback(() => {
     const newDiceValue = Math.floor(Math.random() * 20) + 1;
     setDiceValue(newDiceValue);
-    setLastRolledPlayer(currentPlayer);
     
     const updatedPlayers = [...players];
     const maxPosition = gameConfig.waypoints.length - 1;
@@ -79,8 +79,6 @@ function App() {
       }
     }
 
-    setLastRollResult(resultMessage);
-
     const currentPos = updatedPlayers[currentPlayer].position;
     let newPosition = currentPos + positionChange;
     
@@ -98,28 +96,27 @@ function App() {
     } else {
       setCurrentPlayer(currentPlayer === 0 ? 1 : 0);
     }
+
+    // Create log entry and show toast
+    const logEntry = showTurnResult(
+      updatedPlayers[currentPlayer],
+      newDiceValue,
+      territoryType,
+      resultMessage
+    );
+    
+    setGameLogs(prev => [...prev, logEntry]);
   }, [currentPlayer, players]);
 
   // AI turn handler
   useEffect(() => {
     if (gameMode === 'ai' && currentPlayer === 1 && !isGameOver) {
-      const aiDelay = Math.random() * 1000 + 1000; // Random delay between 1-2 seconds
+      // Wait for first toast to finish (3000ms) plus a random delay between 1-2 seconds
+      const aiDelay = 3000 + Math.random() * 1000 + 1000; // Total delay: 4-5 seconds
       const timeoutId = setTimeout(rollDice, aiDelay);
       return () => clearTimeout(timeoutId);
     }
   }, [gameMode, currentPlayer, isGameOver, rollDice]);
-
-  const resetGame = () => {
-    setPlayers(players.map(player => ({
-      ...player,
-      position: 0
-    })));
-    setCurrentPlayer(0);
-    setDiceValue(null);
-    setIsGameOver(false);
-    setLastRollResult(null);
-    setLastRolledPlayer(null);
-  };
 
   const handleStartGame = (settings) => {
     setGameMode(settings.mode);
@@ -159,36 +156,24 @@ function App() {
 
   return (
     <div className="App">
-      <GameBoard 
-        players={players}
-        currentPlayer={currentPlayer}
-      />
-      <div className="game-controls">
-        <PlayerInfo 
-          players={players}
-          currentPlayer={currentPlayer}
-          isGameOver={isGameOver}
-          lastRollResult={lastRollResult}
-          lastRolledPlayer={lastRolledPlayer}
-        />
-        <RulesInfo 
-          currentPlayer={currentPlayer}
-          players={players}
-          gameConfig={gameConfig}
-        />
-        <Dice 
-          value={diceValue}
-          onRoll={rollDice}
-          disabled={isGameOver || (gameMode === 'ai' && currentPlayer === 1)}
-          currentPlayer={currentPlayer}
-          currentPlayerName={players[currentPlayer].name}
-        />
-        {isGameOver && (
-          <div className="game-over">
-            <h2>{players[currentPlayer].name} Wins!</h2>
-            <button onClick={resetGame}>Play Again</button>
-          </div>
-        )}
+      <ToastContainer />
+      <div className="game-layout">
+        <GameBoard players={players} currentPlayer={currentPlayer} />
+        <div className="game-sidebar">
+          <RulesInfo 
+            currentPlayer={currentPlayer}
+            players={players}
+            gameConfig={gameConfig}
+          />
+          <GameLog logs={gameLogs} />
+          <Dice 
+            value={diceValue}
+            onRoll={rollDice}
+            disabled={isGameOver || (gameMode === 'ai' && currentPlayer === 1)}
+            currentPlayer={currentPlayer}
+            currentPlayerName={players[currentPlayer].name}
+          />
+        </div>
       </div>
     </div>
   );

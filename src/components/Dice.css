@@ -44,4 +44,10 @@
   50% { transform: rotate(10deg); }
   75% { transform: rotate(-10deg); }
   100% { transform: rotate(0deg); }
+}
+
+.dice-container h3 {
+  font-family: 'Oldenburg', cursive;
+  margin: 0 0 10px 0;
+  color: #2c3e50;
 } 

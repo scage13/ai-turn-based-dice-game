@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oldenburg&display=swap');
 
 .waypoint-dialog-overlay {
   position: fixed;
@@ -77,14 +77,9 @@
 }
 
 .dialog-header {
-  padding: 20px;
-  color: white;
   position: relative;
   overflow: hidden;
   min-height: 200px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
 }
 
 .location-image {
@@ -95,29 +90,35 @@
   bottom: 0;
   background-size: cover;
   background-position: center;
-  opacity: 0.6;
-  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .dialog-header:hover .location-image {
-  opacity: 0.8;
-  transform: scale(1.05);
+  opacity: 1;
+  transform: none;
 }
 
 .dialog-header h2 {
-  font-family: 'MedievalSharp', cursive;
+  font-family: 'Oldenburg', cursive;
   font-size: 2.5em;
   margin: 0;
   position: relative;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  color: white;
+  z-index: 1;
 }
 
 .location-type {
-  font-family: 'MedievalSharp', cursive;
+  font-family: 'Oldenburg', cursive;
   font-size: 1.2em;
   margin-top: 5px;
   position: relative;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  color: white;
+  z-index: 1;
+}
+
+.dialog-header:hover {
+  transform: none;
 }
 
 .dialog-content {
@@ -126,7 +127,23 @@
   border-radius: 0 0 8px 8px;
 }
 
+.dialog-content h2 {
+  font-family: 'Oldenburg', cursive;
+  font-size: 2.5em;
+  margin: 0 0 10px 0;
+  color: #2c3e50;
+}
+
+.dialog-content .location-type {
+  font-family: 'Oldenburg', cursive;
+  font-size: 1.2em;
+  color: #666;
+  margin-bottom: 20px;
+  text-transform: capitalize;
+}
+
 .location-description {
+  margin-top: 20px;
   font-family: 'Crimson Text', serif;
   font-size: 1.1em;
   line-height: 1.6;
@@ -185,4 +202,10 @@
     transform: translateY(30px);
     opacity: 0;
   }
+}
+
+.waypoint-dialog h2 {
+  font-family: 'Oldenburg', cursive;
+  color: #2c3e50;
+  margin-bottom: 1rem;
 } 
