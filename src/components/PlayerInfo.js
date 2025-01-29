@@ -1,7 +1,7 @@
 import React from 'react';
 import './PlayerInfo.css';
 
-const PlayerInfo = ({ players, currentPlayer, isGameOver }) => {
+const PlayerInfo = ({ players, currentPlayer, isGameOver, lastRollResult }) => {
   return (
     <div className="player-info">
       {players.map((player, index) => (
@@ -11,6 +11,9 @@ const PlayerInfo = ({ players, currentPlayer, isGameOver }) => {
         >
           <h3>{player.name}</h3>
           <p>Position: {player.position}</p>
+          {index === currentPlayer && lastRollResult && !isGameOver && (
+            <p className="roll-result">{lastRollResult}</p>
+          )}
         </div>
       ))}
     </div>

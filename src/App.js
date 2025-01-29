@@ -13,6 +13,7 @@ function App() {
   const [currentPlayer, setCurrentPlayer] = useState(0);
   const [diceValue, setDiceValue] = useState(null);
   const [isGameOver, setIsGameOver] = useState(false);
+  const [lastRollResult, setLastRollResult] = useState(null);
 
   const rollDice = () => {
     const newDiceValue = Math.floor(Math.random() * 20) + 1;
@@ -20,9 +21,33 @@ function App() {
     
     const updatedPlayers = [...players];
     const maxPosition = gameConfig.waypoints.length - 1;
-    const newPosition = Math.min(updatedPlayers[currentPlayer].position + newDiceValue, maxPosition);
-    updatedPlayers[currentPlayer].position = newPosition;
+    let positionChange = 0;
+    let resultMessage = '';
+
+    // Determine position change based on dice roll
+    if (newDiceValue === 1) {
+      positionChange = -1;
+      resultMessage = 'Critical failure! Moving back 1 space';
+    } else if (newDiceValue >= 2 && newDiceValue <= 9) {
+      positionChange = 0;
+      resultMessage = 'Miss! Staying in place';
+    } else if (newDiceValue >= 10 && newDiceValue <= 19) {
+      positionChange = 1;
+      resultMessage = 'Success! Moving forward 1 space';
+    } else if (newDiceValue === 20) {
+      positionChange = 2;
+      resultMessage = 'Critical success! Moving forward 2 spaces';
+    }
+
+    setLastRollResult(resultMessage);
+
+    // Calculate new position with bounds checking
+    const newPosition = Math.max(0, Math.min(
+      updatedPlayers[currentPlayer].position + positionChange,
+      maxPosition
+    ));
     
+    updatedPlayers[currentPlayer].position = newPosition;
     setPlayers(updatedPlayers);
 
     if (newPosition === maxPosition) {
@@ -40,6 +65,7 @@ function App() {
     setCurrentPlayer(0);
     setDiceValue(null);
     setIsGameOver(false);
+    setLastRollResult(null);
   };
 
   return (
@@ -49,7 +75,8 @@ function App() {
         <PlayerInfo 
           players={players} 
           currentPlayer={currentPlayer}
-          isGameOver={isGameOver} 
+          isGameOver={isGameOver}
+          lastRollResult={lastRollResult}
         />
         <Dice 
           value={diceValue} 
