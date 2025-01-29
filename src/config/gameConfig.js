@@ -197,7 +197,7 @@ export const gameConfig = {
     background: {
       image: "background/board-map-bg-cut-version.jpg",
       opacity: 0.8, // 0 to 1
-      scale: "stretch", // 'cover', 'contain', or 'stretch'
+      scale: "cover", // 'cover', 'contain', or 'stretch'
     },
   },
 

@@ -5,6 +5,7 @@ import Dice from './components/Dice';
 import PlayerInfo from './components/PlayerInfo';
 import StartPage from './components/StartPage';
 import { gameConfig } from './config/gameConfig';
+import RulesInfo from './components/RulesInfo';
 
 function App() {
   const [gameStarted, setGameStarted] = useState(false);
@@ -169,6 +170,11 @@ function App() {
           isGameOver={isGameOver}
           lastRollResult={lastRollResult}
           lastRolledPlayer={lastRolledPlayer}
+        />
+        <RulesInfo 
+          currentPlayer={currentPlayer}
+          players={players}
+          gameConfig={gameConfig}
         />
         <Dice 
           value={diceValue}
