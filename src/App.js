@@ -19,7 +19,7 @@ function App() {
   const [lastRollResult, setLastRollResult] = useState(null);
   const [lastRolledPlayer, setLastRolledPlayer] = useState(null);
 
-  const rollDice = () => {
+  const rollDice = useCallback(() => {
     const newDiceValue = Math.floor(Math.random() * 20) + 1;
     setDiceValue(newDiceValue);
     setLastRolledPlayer(currentPlayer);
@@ -97,7 +97,7 @@ function App() {
     } else {
       setCurrentPlayer(currentPlayer === 0 ? 1 : 0);
     }
-  };
+  }, [currentPlayer, players]);
 
   // AI turn handler
   useEffect(() => {
