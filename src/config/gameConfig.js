@@ -127,12 +127,12 @@ export const gameConfig = {
 
   // Canvas settings
   canvas: {
-    width: 1200,
-    height: 940,
+    width: 1140,
+    height: 1140,
     backgroundColor: '#ffffff',
     padding: 50,
     background: {
-      image: 'background/board-map-bg.jpg',
+      image: 'background/board-map-bg.webp',
       opacity: 1,  // 0 to 1
       scale: 'stretch' // 'cover', 'contain', or 'stretch'
     }
