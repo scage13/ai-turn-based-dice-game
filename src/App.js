@@ -19,7 +19,7 @@ function App() {
   const [lastRollResult, setLastRollResult] = useState(null);
   const [lastRolledPlayer, setLastRolledPlayer] = useState(null);
 
-  const rollDice = useCallback(() => {
+  const rollDice = () => {
     const newDiceValue = Math.floor(Math.random() * 20) + 1;
     setDiceValue(newDiceValue);
     setLastRolledPlayer(currentPlayer);
@@ -29,18 +29,53 @@ function App() {
     let positionChange = 0;
     let resultMessage = '';
 
+    // Get current waypoint type
+    const currentWaypoint = gameConfig.waypoints[updatedPlayers[currentPlayer].position];
+    const territoryType = currentWaypoint.locationType;
+    const playerSide = updatedPlayers[currentPlayer].side;
+
+    // Critical failure (always the same)
     if (newDiceValue === 1) {
       positionChange = -1;
       resultMessage = 'Critical failure! Moving back 1 space';
-    } else if (newDiceValue >= 2 && newDiceValue <= 9) {
-      positionChange = 0;
-      resultMessage = 'Miss! Staying in place';
-    } else if (newDiceValue >= 10 && newDiceValue <= 19) {
-      positionChange = 1;
-      resultMessage = 'Success! Moving forward 1 space';
-    } else if (newDiceValue === 20) {
+    }
+    // Critical success (always the same)
+    else if (newDiceValue === 20) {
       positionChange = 2;
       resultMessage = 'Critical success! Moving forward 2 spaces';
+    }
+    // Territory-based rules
+    else {
+      if (territoryType === 'common') {
+        // Standard rules for common territory
+        if (newDiceValue >= 2 && newDiceValue <= 9) {
+          positionChange = 0;
+          resultMessage = 'Miss! Staying in place';
+        } else if (newDiceValue >= 10 && newDiceValue <= 19) {
+          positionChange = 1;
+          resultMessage = 'Success! Moving forward 1 space';
+        }
+      }
+      else if (territoryType === playerSide) {
+        // Favorable territory (easier to move)
+        if (newDiceValue >= 2 && newDiceValue <= 7) {
+          positionChange = 0;
+          resultMessage = 'Miss on friendly territory! Staying in place';
+        } else if (newDiceValue >= 8 && newDiceValue <= 19) {
+          positionChange = 1;
+          resultMessage = 'Success on friendly territory! Moving forward 1 space';
+        }
+      }
+      else {
+        // Hostile territory (harder to move)
+        if (newDiceValue >= 2 && newDiceValue <= 11) {
+          positionChange = 0;
+          resultMessage = 'Miss on hostile territory! Staying in place';
+        } else if (newDiceValue >= 12 && newDiceValue <= 19) {
+          positionChange = 1;
+          resultMessage = 'Success despite hostile territory! Moving forward 1 space';
+        }
+      }
     }
 
     setLastRollResult(resultMessage);
@@ -62,7 +97,7 @@ function App() {
     } else {
       setCurrentPlayer(currentPlayer === 0 ? 1 : 0);
     }
-  }, [currentPlayer, players]);
+  };
 
   // AI turn handler
   useEffect(() => {
