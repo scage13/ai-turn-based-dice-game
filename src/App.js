@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import './App.css';
 import GameBoard from './components/GameBoard';
 import Dice from './components/Dice';
 import PlayerInfo from './components/PlayerInfo';
+import StartPage from './components/StartPage';
 import { gameConfig } from './config/gameConfig';
 
 function App() {
+  const [gameStarted, setGameStarted] = useState(false);
+  const [gameMode, setGameMode] = useState(null); // 'local' or 'ai'
   const [players, setPlayers] = useState([
     { id: 1, name: "Player 1", position: 0 },
     { id: 2, name: "Player 2", position: 0 }
@@ -15,7 +18,7 @@ function App() {
   const [isGameOver, setIsGameOver] = useState(false);
   const [lastRollResult, setLastRollResult] = useState(null);
 
-  const rollDice = () => {
+  const rollDice = useCallback(() => {
     const newDiceValue = Math.floor(Math.random() * 20) + 1;
     setDiceValue(newDiceValue);
     
@@ -24,7 +27,6 @@ function App() {
     let positionChange = 0;
     let resultMessage = '';
 
-    // Determine position change based on dice roll
     if (newDiceValue === 1) {
       positionChange = -1;
       resultMessage = 'Critical failure! Moving back 1 space';
@@ -41,7 +43,6 @@ function App() {
 
     setLastRollResult(resultMessage);
 
-    // Calculate new position with bounds checking
     const newPosition = Math.max(0, Math.min(
       updatedPlayers[currentPlayer].position + positionChange,
       maxPosition
@@ -55,18 +56,40 @@ function App() {
     } else {
       setCurrentPlayer(currentPlayer === 0 ? 1 : 0);
     }
-  };
+  }, [currentPlayer, players]);
+
+  // AI turn handler
+  useEffect(() => {
+    if (gameMode === 'ai' && currentPlayer === 1 && !isGameOver) {
+      const aiDelay = Math.random() * 1000 + 1000; // Random delay between 1-2 seconds
+      const timeoutId = setTimeout(rollDice, aiDelay);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [gameMode, currentPlayer, isGameOver, rollDice]);
 
   const resetGame = () => {
     setPlayers([
       { id: 1, name: "Player 1", position: 0 },
-      { id: 2, name: "Player 2", position: 0 }
+      { id: 2, name: gameMode === 'ai' ? "AI Player" : "Player 2", position: 0 }
     ]);
     setCurrentPlayer(0);
     setDiceValue(null);
     setIsGameOver(false);
     setLastRollResult(null);
   };
+
+  const handleStartGame = (settings) => {
+    setGameMode(settings.mode);
+    setPlayers([
+      { id: 1, name: "Player 1", position: 0 },
+      { id: 2, name: settings.mode === 'ai' ? "AI Player" : "Player 2", position: 0 }
+    ]);
+    setGameStarted(true);
+  };
+
+  if (!gameStarted) {
+    return <StartPage onStartGame={handleStartGame} />;
+  }
 
   return (
     <div className="App">
@@ -81,7 +104,7 @@ function App() {
         <Dice 
           value={diceValue} 
           onRoll={rollDice}
-          disabled={isGameOver}
+          disabled={isGameOver || (gameMode === 'ai' && currentPlayer === 1)}
           currentPlayer={currentPlayer}
         />
         {isGameOver && (
