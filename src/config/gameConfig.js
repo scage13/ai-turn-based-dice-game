@@ -15,7 +15,8 @@ export const gameConfig = {
       },
       fontSize: 24,
       fontColor: '#fff',
-      fontFamily: 'Monospace'
+      fontFamily: 'Monospace',
+      opacity: 0.6  // Add opacity setting (0 to 1)
     },
     defaultBackground: 'waypoints/default.webp',
   },
@@ -24,7 +25,7 @@ export const gameConfig = {
   waypoints: [
     {
       id: 0,
-      coordinates: { x: 100, y: 100 },
+      coordinates: { x: 310, y: 210 },
       background: 'waypoints/shire.webp',
       rulesInfo: 'Start your journey here. Roll the dice to move forward.',
       storyInfo: 'The peaceful Shire, where Hobbits dwell and the great journey begins.'
@@ -39,7 +40,7 @@ export const gameConfig = {
     {
       id: 2,
       coordinates: { x: 300, y: 150 },
-      background: 'waypoints/barrow-downs.webp',
+      background: 'waypoints/trollshaws.webp',
       rulesInfo: {},
       storyInfo: {
         title: 'Waypoint 3',

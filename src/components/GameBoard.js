@@ -143,10 +143,13 @@ const GameBoard = ({ players }) => {
 
           drawHexagon(ctx, pos.x, pos.y, size);
           
+          // Set waypoint opacity
+          ctx.save();
+          ctx.globalAlpha = style.opacity ?? 1;
+          
           // Draw background image or gradient
           const backgroundImage = waypoint?.background ? images[waypointIndex] : images.default;
           if (backgroundImage) {
-            ctx.save();
             ctx.clip();
             ctx.drawImage(
               backgroundImage,
@@ -155,7 +158,6 @@ const GameBoard = ({ players }) => {
               size * 2,
               size * 2
             );
-            ctx.restore();
           } else {
             const gradient = ctx.createRadialGradient(
               pos.x, pos.y, 0,
@@ -167,16 +169,12 @@ const GameBoard = ({ players }) => {
             ctx.fill();
           }
 
+          // Reset opacity for stroke and text
+          ctx.restore();
+
           ctx.strokeStyle = style.strokeColor;
           ctx.lineWidth = style.strokeWidth;
           ctx.stroke();
-
-          // Draw waypoint number
-          ctx.fillStyle = style.fontColor;
-          ctx.font = `bold ${style.fontSize}px ${style.fontFamily}`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(waypointIndex.toString(), pos.x, pos.y);
         });
 
         // Draw players

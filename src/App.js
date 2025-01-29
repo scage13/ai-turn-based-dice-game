@@ -44,7 +44,6 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Dice Journey Game</h1>
       <GameBoard players={players} />
       <div className="game-controls">
         <PlayerInfo 
