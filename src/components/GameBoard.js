@@ -214,13 +214,15 @@ const GameBoard = ({ players, currentPlayer }) => {
     });
 
     // Draw players after waypoints
-    players.forEach((player) => {
+    players.forEach((player, index) => {
       const pos = getWaypointPosition(player.position, waypoints.length);
       const { player: playerConfig } = gameConfig;
       
       // Calculate icon position (centered above waypoint)
       const iconSize = playerConfig.size * 2;
-      const x = pos.x - iconSize / 2;
+      // Add horizontal offset based on player index
+      const horizontalOffset = index === 0 ? -10 : 10;  // Player 1 left, Player 2 right
+      const x = pos.x - iconSize / 2 + horizontalOffset;  // Add offset to x position
       const y = pos.y - playerConfig.offset - iconSize / 2;
       
       // Draw player icon based on side
