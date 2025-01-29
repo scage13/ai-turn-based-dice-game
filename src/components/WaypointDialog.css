@@ -1,0 +1,188 @@
+@import url('https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap');
+
+.waypoint-dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: fadeIn 0.3s ease forwards;
+}
+
+.waypoint-dialog {
+  background-color: #f4e4bc;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  max-width: 800px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  border: 3px solid #8B7355;
+  animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  transform: translateY(30px);
+  opacity: 0;
+}
+
+/* Animation keyframes */
+@keyframes fadeIn {
+  from {
+    background-color: rgba(0, 0, 0, 0);
+  }
+  to {
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #fff;
+  cursor: pointer;
+  z-index: 2;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.3);
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.close-button:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+  transform: scale(1.1);
+}
+
+.dialog-header {
+  padding: 20px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.location-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.6;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.dialog-header:hover .location-image {
+  opacity: 0.8;
+  transform: scale(1.05);
+}
+
+.dialog-header h2 {
+  font-family: 'MedievalSharp', cursive;
+  font-size: 2.5em;
+  margin: 0;
+  position: relative;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.location-type {
+  font-family: 'MedievalSharp', cursive;
+  font-size: 1.2em;
+  margin-top: 5px;
+  position: relative;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.dialog-content {
+  padding: 20px;
+  background-color: #f4e4bc;
+  border-radius: 0 0 8px 8px;
+}
+
+.location-description {
+  font-family: 'Crimson Text', serif;
+  font-size: 1.1em;
+  line-height: 1.6;
+  color: #2c3e50;
+  text-align: justify;
+}
+
+.location-description p {
+  margin: 0 0 1em 0;
+}
+
+/* Scrollbar styling */
+.waypoint-dialog::-webkit-scrollbar {
+  width: 8px;
+}
+
+.waypoint-dialog::-webkit-scrollbar-track {
+  background: #d4c4a4;
+}
+
+.waypoint-dialog::-webkit-scrollbar-thumb {
+  background: #8B7355;
+  border-radius: 4px;
+}
+
+/* Add hover effect to dialog */
+.waypoint-dialog:hover {
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+  transition: box-shadow 0.3s ease;
+}
+
+/* Optional: Add exit animations */
+.waypoint-dialog-overlay.closing {
+  animation: fadeOut 0.3s ease forwards;
+}
+
+.waypoint-dialog.closing {
+  animation: slideOut 0.3s ease forwards;
+}
+
+@keyframes fadeOut {
+  from {
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+  to {
+    background-color: rgba(0, 0, 0, 0);
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+} 

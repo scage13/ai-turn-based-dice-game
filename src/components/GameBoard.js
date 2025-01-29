@@ -1,9 +1,12 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './GameBoard.css';
 import { gameConfig } from '../config/gameConfig';
+import WaypointDialog from './WaypointDialog';
 
 const GameBoard = ({ players, currentPlayer }) => {
   const canvasRef = useRef(null);
+  const [selectedWaypoint, setSelectedWaypoint] = useState(null);
+  const [hoveredWaypoint, setHoveredWaypoint] = useState(null);
   const waypoints = Array.from({ length: gameConfig.waypoints.length }, (_, i) => i);
   
   // Calculate waypoint positions
@@ -44,6 +47,52 @@ const GameBoard = ({ players, currentPlayer }) => {
       }
     }
     ctx.closePath();
+  };
+
+  // Add click handler
+  const handleCanvasClick = (event) => {
+    const canvas = canvasRef.current;
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+
+    // Check if click is within any waypoint
+    gameConfig.waypoints.forEach(waypoint => {
+      const pos = getWaypointPosition(waypoint.id, gameConfig.waypoints.length);
+      const distance = Math.sqrt(
+        Math.pow(x - pos.x, 2) + Math.pow(y - pos.y, 2)
+      );
+
+      if (distance <= gameConfig.waypoint.size) {
+        setSelectedWaypoint(waypoint);
+      }
+    });
+  };
+
+  // Add mousemove handler
+  const handleCanvasMouseMove = (event) => {
+    const canvas = canvasRef.current;
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+
+    let isOverWaypoint = false;
+    gameConfig.waypoints.forEach(waypoint => {
+      const pos = getWaypointPosition(waypoint.id, gameConfig.waypoints.length);
+      const distance = Math.sqrt(
+        Math.pow(x - pos.x, 2) + Math.pow(y - pos.y, 2)
+      );
+
+      if (distance <= gameConfig.waypoint.size) {
+        isOverWaypoint = true;
+        setHoveredWaypoint(waypoint);
+      }
+    });
+
+    canvas.style.cursor = isOverWaypoint ? 'pointer' : 'default';
+    if (!isOverWaypoint) {
+      setHoveredWaypoint(null);
+    }
   };
 
   useEffect(() => {
@@ -215,7 +264,15 @@ const GameBoard = ({ players, currentPlayer }) => {
 
   return (
     <div className="game-board">
-      <canvas ref={canvasRef}></canvas>
+      <canvas 
+        ref={canvasRef}
+        onClick={handleCanvasClick}
+        onMouseMove={handleCanvasMouseMove}
+      />
+      <WaypointDialog 
+        waypoint={selectedWaypoint}
+        onClose={() => setSelectedWaypoint(null)}
+      />
     </div>
   );
 };
