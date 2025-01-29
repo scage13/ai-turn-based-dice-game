@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import './GameBoard.css';
 import { gameConfig } from '../config/gameConfig';
 
-const GameBoard = ({ players }) => {
+const GameBoard = ({ players, currentPlayer }) => {
   const canvasRef = useRef(null);
   const waypoints = Array.from({ length: gameConfig.waypoints.length }, (_, i) => i);
   
@@ -146,7 +146,10 @@ const GameBoard = ({ players }) => {
           const pos = getWaypointPosition(waypointIndex, waypoints.length);
           const { size, style } = gameConfig.waypoint;
           const waypoint = gameConfig.waypoints.find(wp => wp.id === waypointIndex);
-
+          
+          // Check if this waypoint is active (has current player)
+          const activePlayer = players.find(p => p.position === waypointIndex && players.indexOf(p) === currentPlayer);
+          
           drawHexagon(ctx, pos.x, pos.y, size);
           
           // Set waypoint opacity
@@ -178,7 +181,8 @@ const GameBoard = ({ players }) => {
           // Reset opacity for stroke and text
           ctx.restore();
 
-          ctx.strokeStyle = style.strokeColor;
+          // Draw border with active player color if this is current waypoint
+          ctx.strokeStyle = activePlayer ? activePlayer.color : style.strokeColor;
           ctx.lineWidth = style.strokeWidth;
           ctx.stroke();
         });
@@ -189,6 +193,7 @@ const GameBoard = ({ players }) => {
           const { player: playerConfig } = gameConfig;
           
           // Calculate icon position (centered above waypoint)
+          console.log(player, playerConfig);
           const iconSize = playerConfig.size * 2; // Adjust size as needed
           const x = pos.x - iconSize / 2;
           const y = pos.y - playerConfig.offset - iconSize / 2;
@@ -206,7 +211,7 @@ const GameBoard = ({ players }) => {
     };
 
     loadImages();
-  }, [players, waypoints]);
+  }, [players, waypoints, currentPlayer]);
 
   return (
     <div className="game-board">

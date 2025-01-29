@@ -203,7 +203,7 @@ export const gameConfig = {
 
   // Player marker settings
   player: {
-    size: 32,           // This will be the base size for the icon
+    size: 26,           // This will be the base size for the icon
     offset: 40,         // Distance above waypoint
     style: {
       strokeColor: '#fff',
