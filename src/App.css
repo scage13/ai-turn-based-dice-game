@@ -1,21 +1,32 @@
 .App {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
   text-align: center;
-  padding: 20px;
-  margin: 0 auto;
-  padding-top: 70px; /* Space for fixed toolbar */
-  max-width: none; /* Remove max-width constraint */
+  min-width: 1200px;
+  min-height: 100vh;
+  padding-top: 80px;
+  padding-bottom: 24px;
+  background: linear-gradient(
+    135deg,
+    #1a2a3d 0%,    /* Deep blue like night in Middle-earth */
+    #2c1810 50%,   /* Dark brown like Mordor */
+    #4a3c2d 100%   /* Warm earth tone like the Shire */
+  );
 }
 
 .game-layout {
   display: flex;
-  gap: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  max-width: 1500px;
+  gap: 1rem;
   padding: 1rem;
-  max-width: 1400px; /* Add max-width to the layout instead */
   margin: 0 auto;
 }
 
 .game-sidebar {
-  flex: 0 0 300px;
+  flex: 1;
   min-width: 300px; /* Ensure sidebar doesn't shrink too much */
 }
 

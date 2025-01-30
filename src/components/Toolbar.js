@@ -72,9 +72,12 @@ const Toolbar = ({
         
         <div className="toolbar-right">
           <div className="dice-section">
-            <div className={`dice ${isRolling ? 'rolled' : ''}`}>
-              {diceValue || '?'}
-            </div>
+            {/* Only show dice if it has been rolled at least once */}
+            {diceValue !== null && (
+              <div className={`dice ${isRolling ? 'rolled' : ''}`}>
+                {diceValue}
+              </div>
+            )}
             <button 
               onClick={handleRollClick} 
               disabled={disabled}

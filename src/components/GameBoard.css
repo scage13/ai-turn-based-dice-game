@@ -1,8 +1,6 @@
 .game-board {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
+  align-self: start;
+  border-radius: 12px;
   background-color: #f8f9fa;
 }
 
