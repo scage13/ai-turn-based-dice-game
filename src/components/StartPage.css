@@ -3,7 +3,12 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+  background: linear-gradient(
+    135deg,
+    #1a2a3d 0%,    /* Deep blue like night in Middle-earth */
+    #2c1810 50%,   /* Dark brown like Mordor */
+    #4a3c2d 100%   /* Warm earth tone like the Shire */
+  );
   padding: 20px;
   font-family: 'Oldenburg', cursive;
 }
