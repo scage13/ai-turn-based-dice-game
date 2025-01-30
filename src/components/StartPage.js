@@ -37,11 +37,11 @@ const StartPage = ({ onStartGame }) => {
   return (
     <div className="start-page">
       <div className="start-page-content">
-        <h1>Dice Journey Game</h1>
+        <h1>Middle-earth Explorers</h1>
         
         {!gameMode ? (
           <div className="mode-selection">
-            <h2>Select Game Mode</h2>
+            <h2>Choose Your Game Mode</h2>
             <div className="mode-buttons">
               <button onClick={() => handleModeSelect('local')}>
                 <span className="mode-icon">👥</span>

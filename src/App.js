@@ -134,7 +134,7 @@ function App() {
 
     const evilPlayer = {
       id: 2,
-      name: settings.mode === 'ai' ? 'AI Evil Side' : 'Evil Side',
+      name: settings.mode === 'ai' && settings.player1.side === 'evil' ? 'Evil Side' : 'AI Evil Side',
       position: 0,
       color: '#A30000',
       side: 'evil'
