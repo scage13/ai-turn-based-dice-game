@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Toolbar.css';
 import GameLog from './GameLog';
+import RulesDialog from './RulesDialog';
 
 const Toolbar = ({ 
   onNewGame, 
@@ -14,6 +15,7 @@ const Toolbar = ({
 }) => {
   const [showLogs, setShowLogs] = useState(false);
   const [isRolling, setIsRolling] = useState(false);
+  const [showRules, setShowRules] = useState(false);
 
   // Handle dice animation
   useEffect(() => {
@@ -59,6 +61,13 @@ const Toolbar = ({
               Game Log
             </button>
           )}
+          <button 
+            className="toolbar-button"
+            onClick={() => setShowRules(true)}
+          >
+            <span className="button-icon">📖</span>
+            Rules
+          </button>
         </div>
         
         <div className="toolbar-right">
@@ -95,6 +104,8 @@ const Toolbar = ({
           </div>
         </div>
       )}
+
+      {showRules && <RulesDialog onClose={() => setShowRules(false)} />}
     </>
   );
 };
